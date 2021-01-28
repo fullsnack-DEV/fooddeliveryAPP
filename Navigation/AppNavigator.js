@@ -67,7 +67,10 @@ const AppNavigator = () => (
       showLabel: false,
       style: {
         backgroundColor: 'transparent',
-        borderTopWidth: 0,
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
         elevation: 0,
       },
     }}>
@@ -110,7 +113,7 @@ const AppNavigator = () => (
     />
 
     <Tab.Screen
-      component={HomeNavigator}
+      component={MenuNavigator}
       name="like"
       options={{
         tabBarIcon: ({focused}) => (
@@ -129,7 +132,7 @@ const AppNavigator = () => (
     />
 
     <Tab.Screen
-      component={HomeNavigator}
+      component={MenuNavigator}
       name="user"
       options={{
         tabBarIcon: ({focused}) => (
