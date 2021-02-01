@@ -95,8 +95,8 @@ const AppNavigator = () => (
     />
 
     <Tab.Screen
-      component={MenuNavigator}
-      name="Menu"
+      component={UserNavigator}
+      name="User"
       options={{
         tabBarIcon: ({focused}) => (
           <Image
@@ -134,7 +134,7 @@ const AppNavigator = () => (
 
     <Tab.Screen
       component={UserNavigator}
-      name="user"
+      name="user2"
       options={{
         tabBarIcon: ({focused}) => (
           <Image
