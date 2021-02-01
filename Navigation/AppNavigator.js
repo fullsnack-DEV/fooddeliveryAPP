@@ -4,6 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import HomeNavigator from './HomeNavigation';
 import MenuNavigator from './MenuNavigation';
+import UserNavigator from './UserNavigator';
 import DeliveryNavigator from './MapNavigation';
 import {COLORS, icons} from '../constants/index';
 import Svg, {Path} from 'react-native-svg';
@@ -113,7 +114,7 @@ const AppNavigator = () => (
     />
 
     <Tab.Screen
-      component={MenuNavigator}
+      component={UserNavigator}
       name="like"
       options={{
         tabBarIcon: ({focused}) => (
@@ -132,7 +133,7 @@ const AppNavigator = () => (
     />
 
     <Tab.Screen
-      component={MenuNavigator}
+      component={UserNavigator}
       name="user"
       options={{
         tabBarIcon: ({focused}) => (
