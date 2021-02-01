@@ -12,6 +12,8 @@ import {icons, COLORS, SIZES, FONTS} from '../constants';
 import icon from '../constants/icon';
 
 export default function MenuScreen({route, navigation}) {
+  const scrollX = new Animated.Value(0);
+
   const [restuarent, setrestuarent] = React.useState(null);
   const [currentLocations, setCurrentLocation] = React.useState(null);
 
@@ -91,7 +93,10 @@ export default function MenuScreen({route, navigation}) {
         pagingEnabled
         scrollEventThrottle={16}
         snapToAlignment="center"
-        //onScroll
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {x: scrollX}}}],
+          {useNativeDriver: false},
+        )}
         //This is where we can control the animation on a animated ScrollView
       >
         {/* displaying the food images */}
@@ -112,7 +117,7 @@ export default function MenuScreen({route, navigation}) {
               <View
                 style={{
                   position: 'absolute',
-                  bottom: '-20',
+                  bottom: -20,
                   width: SIZES.width,
                   height: 50,
                   justifyContent: 'center',
@@ -122,18 +127,220 @@ export default function MenuScreen({route, navigation}) {
                   style={{
                     width: 50,
                     backgroundColor: COLORS.white,
-                    borderBottomLeftRadius: '25',
+                    borderBottomLeftRadius: 25,
                     justifyContent: 'center',
                     borderTopLeftRadius: 25,
                     alignItems: 'center',
                   }}>
-                  <Text style={{...FONTS.body1}}>-</Text>
+                  <Text style={{...FONTS.body1, fontWeight: 'bold'}}>-</Text>
+                </TouchableOpacity>
+
+                <View
+                  style={{
+                    width: 50,
+                    backgroundColor: COLORS.white,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={{...FONTS.h2, fontWeight: 'bold'}}>5</Text>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    width: 50,
+                    backgroundColor: COLORS.white,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderTopRightRadius: 25,
+                    borderBottomRightRadius: 25,
+                  }}>
+                  <Text style={{...FONTS.body1, fontWeight: 'bold'}}>+</Text>
                 </TouchableOpacity>
               </View>
+            </View>
+            {/* name and description */}
+            <View
+              style={{
+                width: SIZES.width,
+                alignItems: 'center',
+                marginTop: 15,
+                paddingHorizontal: SIZES.padding * 2,
+              }}>
+              <Text
+                style={{
+                  marginVertical: 10,
+                  textAlign: 'center',
+                  ...FONTS.h2,
+                  fontWeight: 'bold',
+                }}>
+                {item.name} - {item.price.toFixed(2)}
+              </Text>
+              <Text style={{...FONTS.body3, fontWeight: 'bold'}}>
+                {item.description}
+              </Text>
+            </View>
+
+            {/* calories */}
+
+            <View style={{flexDirection: 'row', marginTop: 10}}>
+              <Image
+                source={icons.fire}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                  marginRight: 10,
+                  marginTop: -5,
+                }}
+              />
+
+              <Text style={{...FONTS.body3, color: COLORS.darkgray}}>
+                {item.calories.toFixed(2)} cal
+              </Text>
             </View>
           </View>
         ))}
       </Animated.ScrollView>
+    );
+  }
+
+  function renderdots() {
+    const dotposition = Animated.divide(scrollX, SIZES.width);
+
+    return (
+      <View style={{height: 30, top: -50}}>
+        <View
+          style={{
+            flexDirection: 'row',
+
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: SIZES.padding,
+          }}>
+          {restuarent?.menu.map((item, index) => {
+            const opacity = dotposition.interpolate({
+              inputRange: [index - 1, index, index + 1],
+              outputRange: [0.3, 1, 0.3],
+              extrapolate: 'clamp',
+            });
+
+            const dotsize = dotposition.interpolate({
+              inputRange: [index - 1, index, index + 1],
+              outputRange: [SIZES.base * 0.8, 10, SIZES.base * 0.8],
+              extrapolate: 'clamp',
+            });
+
+            const dotcolor = dotposition.interpolate({
+              inputRange: [index - 1, index, index + 1],
+              outputRange: [COLORS.darkgray, COLORS.primary, COLORS.darkgray],
+              extrapolate: 'clamp',
+            });
+
+            return (
+              <Animated.View
+                key={`dot-${index}`}
+                opacity={opacity}
+                style={{
+                  borderRadius: SIZES.radius,
+                  marginHorizontal: 6,
+
+                  width: dotsize,
+                  height: dotsize,
+                  backgroundColor: dotcolor,
+                }}
+              />
+            );
+          })}
+        </View>
+      </View>
+    );
+  }
+
+  function renderOrder() {
+    return (
+      <View>
+        {renderdots()}
+
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            borderTopLeftRadius: 40,
+            borderTopRightRadius: 40,
+            top: -50,
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: SIZES.padding * 2,
+              paddingHorizontal: SIZES.padding * 3,
+              borderBottomColor: COLORS.lightGray2,
+              borderBottomWidth: 1,
+            }}>
+            <Text style={{...FONTS.h3}}> items in Cart</Text>
+            <Text style={{...FONTS.h3}}>45</Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: SIZES.padding * 2,
+              paddingHorizontal: SIZES.padding * 3,
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <Image
+                source={icons.pin}
+                resizeMode="contain"
+                style={{
+                  width: 20,
+                  height: 20,
+                  tintColor: COLORS.darkgray,
+                }}
+              />
+              <Text style={{marginLeft: SIZES.padding, ...FONTS.h4}}>
+                Location
+              </Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <Image
+                source={icons.master_card}
+                resizeMode="contain"
+                style={{
+                  width: 20,
+                  height: 20,
+                  tintColor: COLORS.darkgray,
+                }}
+              />
+              <Text style={{marginLeft: SIZES.padding, ...FONTS.h4}}>8888</Text>
+            </View>
+          </View>
+          {/* order button */}
+
+          <View
+            style={{
+              padding: SIZES.padding * 2,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <TouchableOpacity
+              style={{
+                width: SIZES.width * 0.9,
+                padding: SIZES.padding,
+                backgroundColor: COLORS.primary,
+                alignItems: 'center',
+                borderRadius: SIZES.radius,
+              }}
+              onPress={() =>
+                navigation.navigate('OrderDelivery', {
+                  restaurant: restaurant,
+                  currentLocation: currentLocation,
+                })
+              }>
+              <Text style={{color: COLORS.white, ...FONTS.h2}}>Order</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     );
   }
 
@@ -142,6 +349,8 @@ export default function MenuScreen({route, navigation}) {
       {renderHeader()}
 
       {renderfoodinfo()}
+
+      {renderOrder()}
     </SafeAreaView>
   );
 }
